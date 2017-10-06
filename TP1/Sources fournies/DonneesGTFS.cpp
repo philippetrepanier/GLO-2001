@@ -37,6 +37,25 @@ vector<string> DonneesGTFS::string_to_vector(const string &s, char delim)
 //! \throws logic_error si un problème survient avec la lecture du fichier
 void DonneesGTFS::ajouterLignes(const std::string &p_nomFichier)
 {
+    // Ouverture du fichier
+    ifstream fichier (p_nomFichier, ios::in);
+    string ligneFich;
+
+    getline(fichier,ligneFich); // ENTETE
+
+    while(getline(fichier, ligneFich)) {
+        // Enlever les " " de la chaine du string
+        ligneFich.erase(remove(ligneFich.begin(), ligneFich.end(), '\"' ), ligneFich.end());
+
+        // Découper le string dans un vecteur
+        vector<string> route = string_to_vector(ligneFich, ',');
+
+        // Insérer les éléments dans les containers
+        m_lignes.insert({stoul(route[0]), Ligne(stoul(route[0]), route[2], route[4], Ligne::couleurToCategorie(route[7]))});
+        m_lignes_par_numero.insert({route[2], Ligne(stoul(route[0]), route[2], route[4], Ligne::couleurToCategorie(route[7]))});
+    }
+
+    fichier.close();
 }
 
 //! \brief ajoute les stations dans l'objet GTFS
@@ -44,6 +63,25 @@ void DonneesGTFS::ajouterLignes(const std::string &p_nomFichier)
 //! \throws logic_error si un problème survient avec la lecture du fichier
 void DonneesGTFS::ajouterStations(const std::string &p_nomFichier)
 {
+    // Ouverture du fichier
+    ifstream fichier (p_nomFichier, ios::in);
+    string ligneFich;
+
+    getline(fichier,ligneFich); // ENTETE
+
+    while(getline(fichier, ligneFich)) {
+        // Enlever les " " de la chaine du string
+        ligneFich.erase(remove(ligneFich.begin(), ligneFich.end(), '\"' ), ligneFich.end());
+
+        // Découper le string dans un vecteur
+        vector<string> stationVect = string_to_vector(ligneFich, ',');
+
+        // Insérer les éléments dans les containers
+        m_stations.insert({stoul(stationVect[0]), Station(stoul(stationVect[0]), stationVect[1], stationVect[2], Coordonnees(stod(stationVect[3]), stod(stationVect[4])))});
+
+    }
+
+    fichier.close();
 }
 
 //! \brief ajoute les transferts dans l'objet GTFS
@@ -63,6 +101,30 @@ void DonneesGTFS::ajouterTransferts(const std::string &p_nomFichier)
 //! \throws logic_error si un problème survient avec la lecture du fichier
 void DonneesGTFS::ajouterServices(const std::string &p_nomFichier)
 {
+    // Ouverture du fichier
+    ifstream fichier (p_nomFichier, ios::in);
+    string ligneFich;
+
+    getline(fichier,ligneFich); // ENTETE
+
+    while(getline(fichier, ligneFich)) {
+        // Enlever les " " de la chaine du string
+        ligneFich.erase(remove(ligneFich.begin(), ligneFich.end(), '\"' ), ligneFich.end());
+
+        // Découper le string dans un vecteur
+        vector<string> servicesVect = string_to_vector(ligneFich, ',');
+
+        //Définir la date en cours
+        Date dateServ (stoul(servicesVect[1].substr(0,4)), stoul(servicesVect[1].substr(4,2)), stoul(servicesVect[1].substr(6,2)));
+
+        if (dateServ == m_date) {
+            if (servicesVect[2] == "1") {
+                m_services.insert(servicesVect[0]);
+            }
+        }
+    }
+
+    fichier.close();
 }
 
 //! \brief ajoute les voyages de la date

@@ -1,0 +1,150 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/DonneesGTFS.cpp
+DonneesGTFS.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/DonneesGTFS.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/DonneesGTFS.h
+string
+-
+vector
+-
+map
+-
+unordered_map
+-
+unordered_set
+-
+fstream
+-
+iostream
+-
+sstream
+-
+auxiliaires.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/auxiliaires.h
+ligne.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/ligne.h
+station.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/station.h
+voyage.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/voyage.h
+arret.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/arret.h
+coordonnees.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/coordonnees.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/arret.cpp
+arret.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/arret.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/arret.h
+memory
+-
+auxiliaires.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/auxiliaires.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/auxiliaires.cpp
+auxiliaires.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/auxiliaires.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/auxiliaires.h
+vector
+-
+string
+-
+fstream
+-
+iostream
+-
+sstream
+-
+time.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/time.h
+unordered_set
+-
+algorithm
+-
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/coordonnees.cpp
+coordonnees.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/coordonnees.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/coordonnees.h
+cmath
+-
+exception
+-
+stdexcept
+-
+iostream
+-
+sstream
+-
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/ligne.cpp
+ligne.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/ligne.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/ligne.h
+string
+-
+vector
+-
+iostream
+-
+exception
+-
+algorithm
+-
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/main.cpp
+iostream
+-
+DonneesGTFS.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/DonneesGTFS.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/station.cpp
+station.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/station.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/station.h
+string
+-
+vector
+-
+map
+-
+unordered_set
+-
+iostream
+-
+coordonnees.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/coordonnees.h
+arret.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/arret.h
+auxiliaires.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/auxiliaires.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/voyage.cpp
+voyage.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/voyage.h
+
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/voyage.h
+string
+-
+set
+-
+memory
+-
+arret.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/arret.h
+auxiliaires.h
+/home/etudiant/Bureau/GLO-2100/TP1/Sources fournies/auxiliaires.h
+
