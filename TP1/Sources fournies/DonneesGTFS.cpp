@@ -108,7 +108,7 @@ void DonneesGTFS::ajouterTransferts(const std::string &p_nomFichier)
                 continue;
             }
             if ((m_stations.find(stoul(transfertVect[0])) != m_stations.end()) and (m_stations.find(stoul(transfertVect[1])) != m_stations.end())){
-                if (transfertVect[3] == "0"){
+                if (transfertVect[3] == "0\r"){
                     transfertVect[3] = "1";
                 }
                 m_transferts.push_back(make_tuple(stoul(transfertVect[0]), stoul(transfertVect[1]), stoul(transfertVect[3])));
