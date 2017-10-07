@@ -34,3 +34,5 @@
 #Folders
 TP1/.idea/
 TP1/cmake-build-debug/
+.idea/
+cmake-build-debug/
