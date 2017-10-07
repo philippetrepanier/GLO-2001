@@ -93,6 +93,30 @@ void DonneesGTFS::ajouterStations(const std::string &p_nomFichier)
 //! \throws logic_error si tous les arrets de la date et de l'intervalle n'ont pas été ajoutés
 void DonneesGTFS::ajouterTransferts(const std::string &p_nomFichier)
 {
+    if (m_tousLesArretsPresents){
+        // Ouverture du fichier
+        ifstream fichier (p_nomFichier, ios::in);
+        string ligneFich;
+
+        getline(fichier,ligneFich); // ENTETE
+
+        while(getline(fichier, ligneFich)) {
+            // Découper le string dans un vecteur
+            vector<string> transfertVect = string_to_vector(ligneFich, ',');
+            if (transfertVect[0] == transfertVect[1])
+            {
+                continue;
+            }
+            if ((m_stations.find(stoul(transfertVect[0])) != m_stations.end()) and (m_stations.find(stoul(transfertVect[1])) != m_stations.end())){
+                if (transfertVect[3] == "0"){
+                    transfertVect[3] = "1";
+                }
+                m_transferts.push_back(make_tuple(stoul(transfertVect[0]), stoul(transfertVect[1]), stoul(transfertVect[3])));
+            }
+        }
+
+        fichier.close();
+    }
 }
 
 
@@ -133,6 +157,25 @@ void DonneesGTFS::ajouterServices(const std::string &p_nomFichier)
 //! \throws logic_error si un problème survient avec la lecture du fichier
 void DonneesGTFS::ajouterVoyagesDeLaDate(const std::string &p_nomFichier)
 {
+    // Ouverture du fichier
+    ifstream fichier (p_nomFichier, ios::in);
+    string ligneFich;
+
+    getline(fichier,ligneFich); // ENTETE
+
+    while(getline(fichier, ligneFich)) {
+        // Enlever les " " de la chaine du string
+        ligneFich.erase(remove(ligneFich.begin(), ligneFich.end(), '\"' ), ligneFich.end());
+
+        // Découper le string dans un vecteur
+        vector<string> tripsVect = string_to_vector(ligneFich, ',');
+
+        if (m_services.find(tripsVect[1]) != m_services.end()) {
+            m_voyages.insert({tripsVect[2], Voyage(tripsVect[2], stoul(tripsVect[0]), tripsVect[1], tripsVect[3])});
+        }
+    }
+
+    fichier.close();
 }
 
 //! \brief ajoute les arrets aux voyages présents dans le GTFS si l'heure du voyage appartient à l'intervalle de temps du GTFS
@@ -143,6 +186,67 @@ void DonneesGTFS::ajouterVoyagesDeLaDate(const std::string &p_nomFichier)
 //! \throws logic_error si un problème survient avec la lecture du fichier
 void DonneesGTFS::ajouterArretsDesVoyagesDeLaDate(const std::string &p_nomFichier)
 {
+    // Ouverture du fichier
+    ifstream fichier (p_nomFichier, ios::in);
+    string ligneFich;
+
+    if (!fichier.is_open()){
+        throw logic_error("Erreur ouverture du fichier");
+    }
+
+    getline(fichier,ligneFich); // ENTETE
+
+    while(getline(fichier, ligneFich)) {
+        // Enlever les " " de la chaine du string
+        ligneFich.erase(remove(ligneFich.begin(), ligneFich.end(), '\"' ), ligneFich.end());
+
+        // Découper le string dans un vecteur
+        vector<string> stopVect = string_to_vector(ligneFich, ',');
+
+        if (m_voyages.find(stopVect[0]) != m_voyages.end()) {
+            Heure heureArrive(stoul(stopVect[1].substr(0, 2)), stoul(stopVect[1].substr(3, 2)),
+                              stoul(stopVect[1].substr(6, 2)));
+            Heure heureDepart(stoul(stopVect[2].substr(0, 2)), stoul(stopVect[2].substr(3, 2)),
+                              stoul(stopVect[2].substr(6, 2)));
+
+            if (m_now1 <= heureDepart and heureArrive < m_now2) {
+                Arret::Ptr a_ptr = make_shared<Arret>(stoul(stopVect[3]), heureArrive, heureDepart, stoul(stopVect[4]),
+                                                      stopVect[0]);
+
+                m_voyages[stopVect[0]].ajouterArret(a_ptr);
+                m_stations[stoul(stopVect[3])].addArret(a_ptr);
+                ++m_nbArrets;
+            }
+        }
+    }
+
+    // Nettoyer les voyages vides
+    map<string, Voyage>::iterator it;
+
+    it = m_voyages.begin();
+
+    while (it != m_voyages.end()){
+        if (it->second.getNbArrets() < 1 ){
+            it = m_voyages.erase(it);
+        }
+        else{
+            ++it;
+        }
+    }
+
+    map<unsigned int, Station>::iterator it2;
+
+    for (it2 = m_stations.begin(); it2 != m_stations.end(); it2) {
+        if (it2->second.getNbArrets() < 1) {
+            it2 = m_stations.erase(it2);
+        }
+        else {
+            ++it2;
+        }
+    }
+
+    fichier.close();
+    m_tousLesArretsPresents = true;
 }
 
 unsigned int DonneesGTFS::getNbArrets() const
