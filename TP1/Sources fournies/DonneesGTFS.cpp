@@ -1,5 +1,6 @@
 //
 // Created by Mario Marchand on 16-12-29.
+// Modified by Philippe Trépanier on 17-10-09
 //
 
 #include "DonneesGTFS.h"
@@ -41,6 +42,10 @@ void DonneesGTFS::ajouterLignes(const std::string &p_nomFichier)
     ifstream fichier (p_nomFichier, ios::in);
     string ligneFich;
 
+    if (!fichier.is_open()){
+        throw logic_error("Erreur d'ouverture du fichier");
+    }
+
     getline(fichier,ligneFich); // ENTETE
 
     while(getline(fichier, ligneFich)) {
@@ -66,6 +71,10 @@ void DonneesGTFS::ajouterStations(const std::string &p_nomFichier)
     // Ouverture du fichier
     ifstream fichier (p_nomFichier, ios::in);
     string ligneFich;
+
+    if (!fichier.is_open()){
+        throw logic_error("Erreur d'ouverture du fichier");
+    }
 
     getline(fichier,ligneFich); // ENTETE
 
@@ -98,6 +107,13 @@ void DonneesGTFS::ajouterTransferts(const std::string &p_nomFichier)
         ifstream fichier (p_nomFichier, ios::in);
         string ligneFich;
 
+        if (!fichier.is_open()){
+            throw logic_error("Erreur d'ouverture du fichier");
+        }
+        if (!m_tousLesArretsPresents){
+            throw logic_error("Les arrets de la date/intervalle n'ont pas été ajoutés!");
+        }
+
         getline(fichier,ligneFich); // ENTETE
 
         while(getline(fichier, ligneFich)) {
@@ -128,6 +144,10 @@ void DonneesGTFS::ajouterServices(const std::string &p_nomFichier)
     // Ouverture du fichier
     ifstream fichier (p_nomFichier, ios::in);
     string ligneFich;
+
+    if (!fichier.is_open()){
+        throw logic_error("Erreur d'ouverture du fichier");
+    }
 
     getline(fichier,ligneFich); // ENTETE
 
@@ -161,6 +181,10 @@ void DonneesGTFS::ajouterVoyagesDeLaDate(const std::string &p_nomFichier)
     ifstream fichier (p_nomFichier, ios::in);
     string ligneFich;
 
+    if (!fichier.is_open()){
+        throw logic_error("Erreur d'ouverture du fichier");
+    }
+
     getline(fichier,ligneFich); // ENTETE
 
     while(getline(fichier, ligneFich)) {
@@ -191,7 +215,7 @@ void DonneesGTFS::ajouterArretsDesVoyagesDeLaDate(const std::string &p_nomFichie
     string ligneFich;
 
     if (!fichier.is_open()){
-        throw logic_error("Erreur ouverture du fichier");
+        throw logic_error("Erreur d'ouverture du fichier");
     }
 
     getline(fichier,ligneFich); // ENTETE
