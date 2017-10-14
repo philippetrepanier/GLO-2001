@@ -42,7 +42,7 @@ void DonneesGTFS::ajouterLignes(const std::string &p_nomFichier) {
         throw logic_error("Erreur d'ouverture du fichier");
     }
 
-    getline(fichier, ligneFich); // ENTETE
+    getline(fichier, ligneFich); // Lire la 1ere ligne d'entête et l'enlever
 
     while (getline(fichier, ligneFich)) {
         // Enlever les " " de la chaine du string
@@ -51,7 +51,7 @@ void DonneesGTFS::ajouterLignes(const std::string &p_nomFichier) {
         // Découper le string dans un vecteur
         vector<string> route = string_to_vector(ligneFich, ',');
 
-        // Insérer les éléments dans les containers
+        // Insérer les éléments dans les containers. Les valeurs requises sont passées comme dans la définition du constructeur
         m_lignes.insert(
                 {stoul(route[0]), Ligne(stoul(route[0]), route[2], route[4], Ligne::couleurToCategorie(route[7]))});
         m_lignes_par_numero.insert(
@@ -73,7 +73,7 @@ void DonneesGTFS::ajouterStations(const std::string &p_nomFichier) {
         throw logic_error("Erreur d'ouverture du fichier");
     }
 
-    getline(fichier, ligneFich); // ENTETE
+    getline(fichier, ligneFich); // Lire la 1ere ligne d'entête et l'enlever
 
     while (getline(fichier, ligneFich)) {
         // Enlever les " " de la chaine du string
@@ -82,7 +82,7 @@ void DonneesGTFS::ajouterStations(const std::string &p_nomFichier) {
         // Découper le string dans un vecteur
         vector<string> stationVect = string_to_vector(ligneFich, ',');
 
-        // Insérer les éléments dans les containers
+        // Insérer les éléments dans les containers. Les valeurs requises sont passées comme dans la définition du constructeur
         m_stations.insert({stoul(stationVect[0]), Station(stoul(stationVect[0]), stationVect[1], stationVect[2],
                                                           Coordonnees(stod(stationVect[3]), stod(stationVect[4])))});
 
@@ -111,7 +111,7 @@ void DonneesGTFS::ajouterTransferts(const std::string &p_nomFichier) {
             throw logic_error("Les arrets de la date/intervalle n'ont pas été ajoutés!");
         }
 
-        getline(fichier, ligneFich); // ENTETE
+        getline(fichier, ligneFich); // Lire la 1ere ligne d'entête et l'enlever
 
         while (getline(fichier, ligneFich)) {
             // Découper le string dans un vecteur
@@ -122,8 +122,10 @@ void DonneesGTFS::ajouterTransferts(const std::string &p_nomFichier) {
             if ((m_stations.find(stoul(transfertVect[0])) != m_stations.end()) and
                 (m_stations.find(stoul(transfertVect[1])) != m_stations.end())) {
                 if (transfertVect[3] == "0\r") {
+                    // Cette vérification permet de remplacer les 0s par des 1s; Le \r est le caractère de fin de ligne du fichier qui est présent à chaque fin de ligne
                     transfertVect[3] = "1";
                 }
+                // Insérer les éléments dans les containers. Les valeurs requises sont passées comme dans la définition du constructeur
                 m_transferts.push_back(
                         make_tuple(stoul(transfertVect[0]), stoul(transfertVect[1]), stoul(transfertVect[3])));
             }
@@ -146,7 +148,7 @@ void DonneesGTFS::ajouterServices(const std::string &p_nomFichier) {
         throw logic_error("Erreur d'ouverture du fichier");
     }
 
-    getline(fichier, ligneFich); // ENTETE
+    getline(fichier, ligneFich); // Lire la 1ere ligne d'entête et l'enlever
 
     while (getline(fichier, ligneFich)) {
         // Enlever les " " de la chaine du string
@@ -155,10 +157,11 @@ void DonneesGTFS::ajouterServices(const std::string &p_nomFichier) {
         // Découper le string dans un vecteur
         vector<string> servicesVect = string_to_vector(ligneFich, ',');
 
-        //Définir la date en cours
+        // Définir la date en cours
         Date dateServ(stoul(servicesVect[1].substr(0, 4)), stoul(servicesVect[1].substr(4, 2)),
                       stoul(servicesVect[1].substr(6, 2)));
 
+        // Insertion des services si la date correspond
         if (dateServ == m_date) {
             if (servicesVect[2] == "1") {
                 m_services.insert(servicesVect[0]);
@@ -182,7 +185,7 @@ void DonneesGTFS::ajouterVoyagesDeLaDate(const std::string &p_nomFichier) {
         throw logic_error("Erreur d'ouverture du fichier");
     }
 
-    getline(fichier, ligneFich); // ENTETE
+    getline(fichier, ligneFich); // Lire la 1ere ligne d'entête et l'enlever
 
     while (getline(fichier, ligneFich)) {
         // Enlever les " " de la chaine du string
@@ -191,6 +194,7 @@ void DonneesGTFS::ajouterVoyagesDeLaDate(const std::string &p_nomFichier) {
         // Découper le string dans un vecteur
         vector<string> tripsVect = string_to_vector(ligneFich, ',');
 
+        // Ajouter les voyages (avec les paramètres requis par le constructeur de la classe) s'il y a un service pour la date
         if (m_services.find(tripsVect[1]) != m_services.end()) {
             m_voyages.insert({tripsVect[2], Voyage(tripsVect[2], stoul(tripsVect[0]), tripsVect[1], tripsVect[3])});
         }
@@ -214,7 +218,7 @@ void DonneesGTFS::ajouterArretsDesVoyagesDeLaDate(const std::string &p_nomFichie
         throw logic_error("Erreur d'ouverture du fichier");
     }
 
-    getline(fichier, ligneFich); // ENTETE
+    getline(fichier, ligneFich); // Lire la 1ere ligne d'entête et l'enlever
 
     while (getline(fichier, ligneFich)) {
         // Enlever les " " de la chaine du string
@@ -223,12 +227,14 @@ void DonneesGTFS::ajouterArretsDesVoyagesDeLaDate(const std::string &p_nomFichie
         // Découper le string dans un vecteur
         vector<string> stopVect = string_to_vector(ligneFich, ',');
 
+        // Vérification si des voyages ont l'arret de la ligne du fichier
         if (m_voyages.find(stopVect[0]) != m_voyages.end()) {
             Heure heureArrive(stoul(stopVect[1].substr(0, 2)), stoul(stopVect[1].substr(3, 2)),
                               stoul(stopVect[1].substr(6, 2)));
             Heure heureDepart(stoul(stopVect[2].substr(0, 2)), stoul(stopVect[2].substr(3, 2)),
                               stoul(stopVect[2].substr(6, 2)));
 
+            // Vérification des heures du trajet et ajout dans voyages et stations. Incrémentation du nombre d'arret
             if (m_now1 <= heureDepart and heureArrive < m_now2) {
                 Arret::Ptr a_ptr = make_shared<Arret>(stoul(stopVect[3]), heureArrive, heureDepart, stoul(stopVect[4]),
                                                       stopVect[0]);
@@ -255,7 +261,9 @@ void DonneesGTFS::ajouterArretsDesVoyagesDeLaDate(const std::string &p_nomFichie
 
     map<unsigned int, Station>::iterator it2;
 
-    for (it2 = m_stations.begin(); it2 != m_stations.end(); it2) {
+    it2 = m_stations.begin();
+
+    while (it2 != m_stations.end()) {
         if (it2->second.getNbArrets() < 1) {
             it2 = m_stations.erase(it2);
         } else {
@@ -264,6 +272,7 @@ void DonneesGTFS::ajouterArretsDesVoyagesDeLaDate(const std::string &p_nomFichie
     }
 
     fichier.close();
+    // Assigner Vrai que tous les arrets présents ont été ajoutés aux voyages et stations
     m_tousLesArretsPresents = true;
 }
 
