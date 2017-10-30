@@ -52,7 +52,18 @@ ReseauGTFS::ReseauGTFS(const DonneesGTFS &p_gtfs)
 //! \throws logic_error si une incohérence est détecté lors de cette étape de construction du graphe
 void ReseauGTFS::ajouterArcsVoyages(const DonneesGTFS & p_gtfs)
 {
-    //ajouter votre code ici
+    const map<std::string, Voyage> m_voyages = p_gtfs.getVoyages();
+
+    for (auto itr = m_voyages.begin(); itr != m_voyages.end(); ++itr)
+    {
+        const set<Arret::Ptr, Voyage::compArret> m_arretsVoyage = itr->second.getArrets();
+        for (auto itr2 = m_arretsVoyage.begin(); itr2 != m_arretsVoyage.end(); ++ itr2)
+        {
+            m_sommetDeArret.insert({*itr2, m_arretDuSommet.size()});
+            m_arretDuSommet.push_back(*itr2);
+        }
+
+    };
 }
 
 //! \brief ajout des arcs dus aux attentes à chaque station
