@@ -107,7 +107,7 @@ void DonneesGTFS::ajouterTransferts(const std::string &p_nomFichier) {
         if (!fichier.is_open()) {
             throw logic_error("Erreur d'ouverture du fichier");
         }
-        if (!m_tousLesArretsPresents) {
+        if (m_tousLesArretsPresents) {
             throw logic_error("Les arrets de la date/intervalle n'ont pas été ajoutés!");
         }
 
