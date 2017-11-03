@@ -8,8 +8,7 @@
 using namespace std;
 
 //détermine le temps d'exécution (en microseconde) entre tv2 et tv2
-long tempsExecution(const timeval &tv1, const timeval &tv2)
-{
+long tempsExecution(const timeval &tv1, const timeval &tv2) {
     const long unMillion = 1000000;
     long dt_usec = tv2.tv_usec - tv1.tv_usec;
     long dt_sec = tv2.tv_sec - tv1.tv_sec;
@@ -18,18 +17,15 @@ long tempsExecution(const timeval &tv1, const timeval &tv2)
     return dtms;
 }
 
-size_t ReseauGTFS::getNbArcsOrigineVersStations() const
-{
+size_t ReseauGTFS::getNbArcsOrigineVersStations() const {
     return m_nbArcsOrigineVersStations;
 }
 
-size_t ReseauGTFS::getNbArcsStationsVersDestination() const
-{
+size_t ReseauGTFS::getNbArcsStationsVersDestination() const {
     return m_nbArcsStationsVersDestination;
 }
 
-double ReseauGTFS::getDistMaxMarche() const
-{
+double ReseauGTFS::getDistMaxMarche() const {
     return distanceMaxMarche;
 }
 
@@ -39,8 +35,8 @@ double ReseauGTFS::getDistMaxMarche() const
 //! \post initialise la variable m_origine_dest_ajoute à false car les points origine et destination ne font pas parti du graphe
 //! \post insère les données requises dans m_arretDuSommet et m_sommetDeArret et construit le graphe m_leGraphe
 ReseauGTFS::ReseauGTFS(const DonneesGTFS &p_gtfs)
-: m_leGraphe(p_gtfs.getNbArrets()), m_origine_dest_ajoute(false)
-{
+        : m_leGraphe(p_gtfs.getNbArrets()), m_origine_dest_ajoute(false) {
+
     //Le graphe possède p_gtfs.getNbArrets() sommets, mais il n'a pas encore d'arcs
     ajouterArcsVoyages(p_gtfs);
     ajouterArcsAttentes(p_gtfs);
@@ -50,34 +46,86 @@ ReseauGTFS::ReseauGTFS(const DonneesGTFS &p_gtfs)
 //! \brief ajout des arcs dus aux voyages
 //! \brief insère les arrêts (associés aux sommets) dans m_arretDuSommet et m_sommetDeArret
 //! \throws logic_error si une incohérence est détecté lors de cette étape de construction du graphe
-void ReseauGTFS::ajouterArcsVoyages(const DonneesGTFS & p_gtfs)
-{
-    const map<std::string, Voyage> m_voyages = p_gtfs.getVoyages();
+void ReseauGTFS::ajouterArcsVoyages(const DonneesGTFS &p_gtfs) {
+    const map<std::string, Voyage> & m_voyages = p_gtfs.getVoyages();
 
-    for (auto itr = m_voyages.begin(); itr != m_voyages.end(); ++itr)
-    {
+    for (auto itr = m_voyages.begin(); itr != m_voyages.end(); ++itr) {
         const set<Arret::Ptr, Voyage::compArret> m_arretsVoyage = itr->second.getArrets();
-        for (auto itr2 = m_arretsVoyage.begin(); itr2 != m_arretsVoyage.end(); ++ itr2)
-        {
-            m_sommetDeArret.insert({*itr2, m_arretDuSommet.size()});
-            m_arretDuSommet.push_back(*itr2);
-        }
 
-    };
+        auto itr2 = m_arretsVoyage.begin();
+        auto precedent = *itr2;
+        size_t i = m_arretDuSommet.size();
+
+        m_sommetDeArret.insert({*itr2, i});
+        m_arretDuSommet.push_back(*itr2);
+
+        ++i;
+        ++itr2;
+
+        while (itr2 != m_arretsVoyage.end()) {
+            m_sommetDeArret.insert({*itr2, i});
+            m_arretDuSommet.push_back(*itr2);
+
+            auto poids = (*itr2)->getHeureArrivee() - precedent->getHeureArrivee();
+
+            m_leGraphe.ajouterArc((i - 1), i, poids);
+
+            precedent = *itr2;
+            ++i;
+            ++itr2;
+        }
+    }
 }
 
 //! \brief ajout des arcs dus aux attentes à chaque station
 //! \throws logic_error si une incohérence est détecté lors de cette étape de construction du graphe
-void ReseauGTFS::ajouterArcsAttentes(const DonneesGTFS & p_gtfs)
-{
-    //ajouter votre code ici
+void ReseauGTFS::ajouterArcsAttentes(const DonneesGTFS &p_gtfs) {
+    const map<unsigned int, Station> & m_stations = p_gtfs.getStations();
+
+    for (auto station = m_stations.begin(); station != m_stations.end(); ++station) {
+        const multimap<Heure, Arret::Ptr> arretsStation = station->second.getArrets();
+
+        auto itr = arretsStation.begin();
+        auto precedent = itr;
+
+        ++itr;
+        while (itr != arretsStation.end()){
+            if ((*precedent).second->getVoyageId() != (*itr).second->getVoyageId()){ // QUE FAIRE QUAND LE CHECK PASSE PAS ... À SUIVRE
+                m_leGraphe.ajouterArc(m_sommetDeArret[(*precedent).second],m_sommetDeArret[(*itr).second], ((*itr).first - (*precedent).first));
+
+            }
+
+            precedent = itr;
+            ++itr;
+        }
+    }
 }
+
 
 //! \brief ajouts des arcs dus aux transferts entre stations
 //! \throws logic_error si une incohérence est détecté lors de cette étape de construction du graphe
-void ReseauGTFS::ajouterArcsTransferts(const DonneesGTFS & p_gtfs)
-{
-    //ajouter votre code ici
+void ReseauGTFS::ajouterArcsTransferts(const DonneesGTFS &p_gtfs) {
+    const std::vector<std::tuple<unsigned int, unsigned int, unsigned int> > & m_transferts = p_gtfs.getTransferts();
+    const map<unsigned int, Station> & m_stations = p_gtfs.getStations();
+
+    for (auto transfert = m_transferts.begin(); transfert != m_transferts.end(); ++transfert){
+        auto fromStationID = get<0>(*transfert);
+        auto toStationID = get<1>(*transfert);
+        auto transferTime = get<2>(*transfert);
+
+        auto station = m_stations.find(fromStationID)->second;
+        auto arretsSuivants = m_stations.find(toStationID)->second.getArrets();
+
+        auto arrets = station.getArrets();
+
+        for (auto arret = arrets.begin(); arret != arrets.end(); ++arret){
+            auto prochainArret = arretsSuivants.lower_bound((*arret).first.add_secondes(transferTime));
+            m_leGraphe.ajouterArc(m_sommetDeArret[(*arret).second],m_sommetDeArret[(*prochainArret).second],((*arret).first - (*prochainArret).first));
+        }
+
+
+    }
+
 }
 
 //! \brief ajoute des arcs au réseau GTFS à partir des données GTFS
@@ -90,8 +138,7 @@ void ReseauGTFS::ajouterArcsTransferts(const DonneesGTFS & p_gtfs)
 //! \post assigne la variable m_origine_dest_ajoute à true (car les points orignine et destination font parti du graphe)
 //! \post insère dans m_sommetsVersDestination les numéros de sommets connctés au point destination
 void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const Coordonnees &p_pointOrigine,
-                                               const Coordonnees &p_pointDestination)
-{
+                                               const Coordonnees &p_pointDestination) {
 
     //ajout des arcs à pieds entre le point source et les arrets des stations atteignables
 
@@ -105,8 +152,7 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
 //! \post Enlève de ReaseauGTFS tous les arcs allant du point source vers un arrêt de station et ceux allant d'un arrêt de station vers la destination
 //! \post assigne la variable m_origine_dest_ajoute à false (les points orignine et destination sont enlevés du graphe)
 //! \post enlève les données de m_sommetsVersDestination
-void ReseauGTFS::enleverArcsOrigineDestination()
-{
+void ReseauGTFS::enleverArcsOrigineDestination() {
     //ajouter votre code ici
 }
 
@@ -116,8 +162,7 @@ void ReseauGTFS::enleverArcsOrigineDestination()
 //! \param[in] p_afficherItineraire: true si on désire afficher l'itinéraire et false autrement
 //! \param[out] p_tempsExecution: le temps d'exécution de l'algorithme de plus court chemin utilisé
 //! \throws logic_error si un problème survient durant l'exécution de la méthode
-void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire, long &p_tempsExecution) const
-{
+void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire, long &p_tempsExecution) const {
     if (!m_origine_dest_ajoute)
         throw logic_error(
                 "ReseauGTFS::afficherItineraire(): il faut ajouter un point origine et un point destination avant d'obtenir un itinéraire");
@@ -133,15 +178,13 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
         throw logic_error("ReseauGTFS::afficherItineraire(): gettimeofday() a échoué pour tv2");
     p_tempsExecution = tempsExecution(tv1, tv2);
 
-    if (tempsDuTrajet == numeric_limits<unsigned int>::max())
-    {
+    if (tempsDuTrajet == numeric_limits<unsigned int>::max()) {
         if (p_afficherItineraire)
             cout << "La destination n'est pas atteignable de l'orignine durant cet intervalle de temps" << endl;
         return;
     }
 
-    if (tempsDuTrajet == 0)
-    {
+    if (tempsDuTrajet == 0) {
         if (p_afficherItineraire) cout << "Vous êtes déjà situé à la destination demandée" << endl;
         return;
     }
@@ -155,8 +198,7 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
         throw logic_error(
                 "ReseauGTFS::afficherItineraire(): le dernier noeud du chemin doit être le point destination");
 
-    if (p_afficherItineraire)
-    {
+    if (p_afficherItineraire) {
         std::cout << std::endl;
         std::cout << "=====================" << std::endl;
         std::cout << "     ITINÉRAIRE      " << std::endl;
@@ -164,7 +206,7 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
         std::cout << std::endl;
     }
 
-    if (p_afficherItineraire) cout << "Heure de départ du point d'origine: "  << p_gtfs.getTempsDebut() << endl;
+    if (p_afficherItineraire) cout << "Heure de départ du point d'origine: " << p_gtfs.getTempsDebut() << endl;
     Arret::Ptr ptr_a = m_arretDuSommet.at(chemin[0]);
     Arret::Ptr ptr_b = m_arretDuSommet.at(chemin[1]);
     if (p_afficherItineraire)
@@ -172,13 +214,11 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
 
     unsigned int sommet = 1;
 
-    while (sommet < chemin.size() - 1)
-    {
+    while (sommet < chemin.size() - 1) {
         ptr_a = ptr_b;
         ++sommet;
         ptr_b = m_arretDuSommet.at(chemin[sommet]);
-        while (ptr_b->getStationId() == ptr_a->getStationId())
-        {
+        while (ptr_b->getStationId() == ptr_a->getStationId()) {
             ptr_a = ptr_b;
             ++sommet;
             ptr_b = m_arretDuSommet.at(chemin[sommet]);
@@ -199,9 +239,9 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
         if (voyage_id_a != voyage_id_b) //on a changé de station à pieds
         {
             if (p_afficherItineraire)
-                cout << "De cette station, rendez-vous à pieds à la station " << p_gtfs.getStations().at(ptr_b->getStationId()) << endl;
-        }
-        else //on a changé de station avec un voyage
+                cout << "De cette station, rendez-vous à pieds à la station "
+                     << p_gtfs.getStations().at(ptr_b->getStationId()) << endl;
+        } else //on a changé de station avec un voyage
         {
             Heure heure = ptr_a->getHeureArrivee();
             unsigned int ligne_id = p_gtfs.getVoyages().at(voyage_id_a).getLigne();
@@ -213,15 +253,15 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
             ptr_a = ptr_b;
             ++sommet;
             ptr_b = m_arretDuSommet.at(chemin[sommet]);
-            while (ptr_b->getVoyageId() == ptr_a->getVoyageId())
-            {
+            while (ptr_b->getVoyageId() == ptr_a->getVoyageId()) {
                 ptr_a = ptr_b;
                 ++sommet;
                 ptr_b = m_arretDuSommet.at(chemin[sommet]);
             }
             //on a changé de voyage
             if (p_afficherItineraire)
-                cout << "et arrêtez-vous à la station " << p_gtfs.getStations().at(ptr_a->getStationId()) << " à l'heure "
+                cout << "et arrêtez-vous à la station " << p_gtfs.getStations().at(ptr_a->getStationId())
+                     << " à l'heure "
                      << ptr_a->getHeureArrivee() << endl;
             if (ptr_b->getStationId() == stationIdDestination) //cas où on est arrivé à la destination
             {
@@ -232,12 +272,12 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
             }
             if (ptr_a->getStationId() != ptr_b->getStationId()) //alors on s'est rendu à pieds à l'autre station
                 if (p_afficherItineraire)
-                    cout << "De cette station, rendez-vous à pieds à la station " << p_gtfs.getStations().at(ptr_b->getStationId()) << endl;
+                    cout << "De cette station, rendez-vous à pieds à la station "
+                         << p_gtfs.getStations().at(ptr_b->getStationId()) << endl;
         }
     }
 
-    if (p_afficherItineraire)
-    {
+    if (p_afficherItineraire) {
         cout << "Déplacez-vous à pieds de cette station au point destination" << endl;
         cout << "Heure d'arrivée à la destination: " << p_gtfs.getTempsDebut().add_secondes(tempsDuTrajet) << endl;
     }
@@ -245,8 +285,7 @@ void ReseauGTFS::itineraire(const DonneesGTFS &p_gtfs, bool p_afficherItineraire
     unsigned int reste_sec = tempsDuTrajet % 3600;
     unsigned int m = reste_sec / 60;
     unsigned int s = reste_sec % 60;
-    if (p_afficherItineraire)
-    {
+    if (p_afficherItineraire) {
         cout << "Durée du trajet: " << h << " heures, " << m << " minutes, " << s << " secondes" << endl;
     }
 
