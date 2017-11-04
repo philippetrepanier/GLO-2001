@@ -68,6 +68,10 @@ void ReseauGTFS::ajouterArcsVoyages(const DonneesGTFS &p_gtfs) {
 
             auto poids = (*itr2)->getHeureArrivee() - precedent->getHeureArrivee();
 
+            if (poids < 0){
+                throw logic_error("Un poids négatif a été détecté");
+            }
+
             m_leGraphe.ajouterArc((i - 1), i, poids);
 
             precedent = *itr2;
