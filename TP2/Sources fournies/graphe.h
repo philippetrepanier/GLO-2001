@@ -30,6 +30,15 @@ public:
     unsigned int plusCourtChemin(size_t p_origine, size_t p_destination,
                              std::vector<size_t> & p_chemin) const;
 
+	inline size_t nb_arc() const{
+		size_t nb_arc = 0;
+		for(auto it : m_listesAdj)
+		{
+			nb_arc += it.size();
+		}
+		return nb_arc;
+	}
+
 private:
 
 	struct Arc

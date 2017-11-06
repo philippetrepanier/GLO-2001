@@ -124,12 +124,11 @@ void ReseauGTFS::ajouterArcsTransferts(const DonneesGTFS &p_gtfs) {
 
         for (auto arret = arrets.begin(); arret != arrets.end(); ++arret){
             auto prochainArret = arretsSuivants.lower_bound((*arret).first.add_secondes(transferTime));
-            m_leGraphe.ajouterArc(m_sommetDeArret[(*arret).second],m_sommetDeArret[(*prochainArret).second],((*arret).first - (*prochainArret).first));
+            if (prochainArret != arretsSuivants.end()){
+                m_leGraphe.ajouterArc(m_sommetDeArret[(*arret).second],m_sommetDeArret[(*prochainArret).second],((*arret).first - (*prochainArret).first));
+            }
         }
-
-
     }
-
 }
 
 //! \brief ajoute des arcs au réseau GTFS à partir des données GTFS

@@ -48,6 +48,9 @@ int main()
     end = clock();
     cout << "Graphe (sans le point source et destination) a été produit en " << double(end - begin) / CLOCKS_PER_SEC << " secondes" << endl;
 
+    cout << "Nb arcs total dans le graphe " << reseau_rtc.nb_arc() << endl;
+
+
     cout << endl;
     cout << "=============================================" << endl;
     cout << "                  premier cas                " << endl;
