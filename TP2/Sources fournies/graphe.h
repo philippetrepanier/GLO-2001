@@ -30,7 +30,6 @@ public:
     unsigned int plusCourtChemin(size_t p_origine, size_t p_destination,
                              std::vector<size_t> & p_chemin) const;
 
-
 private:
 
 	struct Arc

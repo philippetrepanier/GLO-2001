@@ -48,37 +48,6 @@ int main()
     end = clock();
     cout << "Graphe (sans le point source et destination) a été produit en " << double(end - begin) / CLOCKS_PER_SEC << " secondes" << endl;
 
-
-
-
-    cout << endl;
-    cout << "=============================================" << endl;
-    cout << "                  deuxième cas               " << endl;
-    cout << "=============================================" << endl;
-    cout << endl;
-
-
-    Coordonnees pointOrigine2(46.829049, -71.248305); //Centre vidéotron
-    Coordonnees pointDestination2(46.758029, -71.336759); //Int. Chemin ste-Foy et Quatre-Bourgeois
-
-    cout << "Coordonnées GPS du point d'origine: " << pointOrigine2 << endl;
-    cout << "Coordonnées GPS du point de destination: " << pointDestination2 << endl;
-    begin = clock();
-    reseau_rtc.ajouterArcsOrigineDestination(donnees_rtc, pointOrigine2, pointDestination2);
-    end = clock();
-    cout << "Nombre d'arcs ajoutés du point origine vers une station = " << reseau_rtc.getNbArcsOrigineVersStations() << endl;
-    cout << "Nombre d'arcs ajoutés d'une station vers le point destination = " << reseau_rtc.getNbArcsStationsVersDestination() << endl;
-    cout << "Cet ajout au graphe a nécessité un temps d'exécution de " << double(end - begin) / CLOCKS_PER_SEC << " secondes" << endl;
-
-    long tempsExecution2(0);
-    reseau_rtc.itineraire(donnees_rtc, true, tempsExecution2);
-    cout << endl << "Temps d'exécution de l'algorithme de plus court chemin: " << tempsExecution2
-         << " microsecondes" << endl;
-
-
-
-
-
     cout << endl;
     cout << "=============================================" << endl;
     cout << "                  premier cas                " << endl;
@@ -105,10 +74,34 @@ int main()
     cout << endl << "Temps d'exécution de l'algorithme de plus court chemin: " << tempsExecution
          << " microsecondes" << endl;
 
+    cout << endl;
+    cout << "=============================================" << endl;
+    cout << "                  deuxième cas               " << endl;
+    cout << "=============================================" << endl;
+    cout << endl;
 
+    cout << "Suppression du graphe connecté aux points source et destination" << endl;
+    begin = clock();
+    reseau_rtc.enleverArcsOrigineDestination();
+    end = clock();
+    cout << "Cette suppresion a nécessité un temps d'exécution de " << double(end - begin) / CLOCKS_PER_SEC << " secondes" << endl;
 
+    Coordonnees pointOrigine2(46.829049, -71.248305); //Centre vidéotron
+    Coordonnees pointDestination2(46.758029, -71.336759); //Int. Chemin ste-Foy et Quatre-Bourgeois
 
+    cout << "Coordonnées GPS du point d'origine: " << pointOrigine2 << endl;
+    cout << "Coordonnées GPS du point de destination: " << pointDestination2 << endl;
+    begin = clock();
+    reseau_rtc.ajouterArcsOrigineDestination(donnees_rtc, pointOrigine2, pointDestination2);
+    end = clock();
+    cout << "Nombre d'arcs ajoutés du point origine vers une station = " << reseau_rtc.getNbArcsOrigineVersStations() << endl;
+    cout << "Nombre d'arcs ajoutés d'une station vers le point destination = " << reseau_rtc.getNbArcsStationsVersDestination() << endl;
+    cout << "Cet ajout au graphe a nécessité un temps d'exécution de " << double(end - begin) / CLOCKS_PER_SEC << " secondes" << endl;
 
+    long tempsExecution2(0);
+    reseau_rtc.itineraire(donnees_rtc, true, tempsExecution2);
+    cout << endl << "Temps d'exécution de l'algorithme de plus court chemin: " << tempsExecution2
+         << " microsecondes" << endl;
 
     return 0;
 }
