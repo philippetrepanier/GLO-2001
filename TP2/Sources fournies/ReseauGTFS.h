@@ -21,10 +21,6 @@ public:
     size_t getNbArcsStationsVersDestination() const;
     double getDistMaxMarche() const;
 
-    inline size_t nb_arc() const
-    {
-        return m_leGraphe.nb_arc();
-    }
 
 private:
     Graphe m_leGraphe;

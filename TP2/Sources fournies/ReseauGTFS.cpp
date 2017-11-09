@@ -125,10 +125,12 @@ void ReseauGTFS::ajouterArcsTransferts(const DonneesGTFS &p_gtfs) {
         auto arrets = station.getArrets();
 
         for (auto arret = arrets.begin(); arret != arrets.end(); ++arret) {
-            auto prochainArret = arretsSuivants.lower_bound((*arret).first.add_secondes(transferTime));
+            Heure heureArret = (*arret).first;
+            auto prochainArret = arretsSuivants.lower_bound(heureArret.add_secondes(transferTime));
+
             if (prochainArret != arretsSuivants.end()) {
                 m_leGraphe.ajouterArc(m_sommetDeArret[(*arret).second], m_sommetDeArret[(*prochainArret).second],
-                                      ((*arret).first - (*prochainArret).first));
+                                      ((*prochainArret).first- (*arret).first));
             }
         }
     }
@@ -192,7 +194,7 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
         if (distanceMarcheDestination <= distanceMaxMarche){
             const multimap<Heure, Arret::Ptr> &arretsStation = station->second.getArrets();
 
-            unsigned int tempsMarcheDestination = (distanceMarcheOrigine / vitesseDeMarche) * 3600;
+            unsigned int tempsMarcheDestination = (distanceMarcheDestination / vitesseDeMarche) * 3600;
 
             for (auto arret = arretsStation.begin(); arret != arretsStation.end(); ++arret) {
                 size_t sommetArret = m_sommetDeArret[(*arret).second];
@@ -207,7 +209,6 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
     //ajout des arcs à pieds entre le point source et les arrets des stations atteignables
 
     //ajout des arcs à pieds des arrêts de certaine stations vers l'arret point destination
-
     m_origine_dest_ajoute = true;
 }
 
@@ -218,6 +219,10 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
 //! \post assigne la variable m_origine_dest_ajoute à false (les points orignine et destination sont enlevés du graphe)
 //! \post enlève les données de m_sommetsVersDestination
 void ReseauGTFS::enleverArcsOrigineDestination() {
+    if (m_origine_dest_ajoute == false){
+        throw logic_error("Il n'y a pas d'arcs d'origine et de destination dans le graphe");
+    }
+
     size_t tailleGraphe = m_leGraphe.getNbSommets();
 
     for (auto sommet = m_sommetsVersDestination.begin(); sommet != m_sommetsVersDestination.end(); ++sommet){
