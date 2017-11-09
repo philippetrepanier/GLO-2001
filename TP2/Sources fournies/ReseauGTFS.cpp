@@ -52,33 +52,33 @@ void ReseauGTFS::ajouterArcsVoyages(const DonneesGTFS &p_gtfs) {
     for (auto itr = m_voyages.begin(); itr != m_voyages.end(); ++itr) {
         const set<Arret::Ptr, Voyage::compArret> m_arretsVoyage = itr->second.getArrets();
 
-        auto itr2 = m_arretsVoyage.begin();
-        auto precedent = *itr2;
-        size_t i = m_arretDuSommet.size();
+        auto voyage = m_arretsVoyage.begin();
+        auto precedent = *voyage;
+        size_t sommetCourrant = m_arretDuSommet.size();
 
         // On insère les premiers arrets de chaque voyage
-        m_sommetDeArret.insert({*itr2, i});
-        m_arretDuSommet.push_back(*itr2);
+        m_sommetDeArret.insert({*voyage, sommetCourrant});
+        m_arretDuSommet.push_back(*voyage);
 
-        ++i;
-        ++itr2;
+        ++sommetCourrant;
+        ++voyage;
 
         // La boucle itère sur un couple de valeurs et ajoute les arcs respectifs
-        while (itr2 != m_arretsVoyage.end()) {
-            m_sommetDeArret.insert({*itr2, i});
-            m_arretDuSommet.push_back(*itr2);
+        while (voyage != m_arretsVoyage.end()) {
+            m_sommetDeArret.insert({*voyage, sommetCourrant});
+            m_arretDuSommet.push_back(*voyage);
 
-            auto poids = (*itr2)->getHeureArrivee() - precedent->getHeureArrivee();
+            auto poids = (*voyage)->getHeureArrivee() - precedent->getHeureArrivee();
 
             if (poids < 0) {
                 throw logic_error("Un poids négatif a été détecté");
             }
 
-            m_leGraphe.ajouterArc((i - 1), i, poids);
+            m_leGraphe.ajouterArc((sommetCourrant - 1), sommetCourrant, poids);
 
-            precedent = *itr2;
-            ++i;
-            ++itr2;
+            precedent = *voyage;
+            ++sommetCourrant;
+            ++voyage;
         }
     }
 }
@@ -93,23 +93,23 @@ void ReseauGTFS::ajouterArcsAttentes(const DonneesGTFS &p_gtfs) {
         const multimap<Heure, Arret::Ptr> arretsStation = station->second.getArrets();
 
         // On note le premier arret d'une station
-        auto itr = arretsStation.begin();
-        auto precedent = itr;
+        auto arretStation = arretsStation.begin();
+        auto precedent = arretStation;
 
-        ++itr;
-        while (itr != arretsStation.end()) {
-            if ((*precedent).second->getVoyageId() != (*itr).second->getVoyageId()) {
-                auto tempsAttente = (*itr).first - (*precedent).first;
+        ++arretStation;
+        while (arretStation != arretsStation.end()) {
+            if ((*precedent).second->getVoyageId() != (*arretStation).second->getVoyageId()) {
+                auto tempsAttente = (*arretStation).first - (*precedent).first;
 
                 if (tempsAttente < 0){
                     throw logic_error("Une attente négative est impossible");
                 }
-                m_leGraphe.ajouterArc(m_sommetDeArret[(*precedent).second], m_sommetDeArret[(*itr).second],
+                m_leGraphe.ajouterArc(m_sommetDeArret[(*precedent).second], m_sommetDeArret[(*arretStation).second],
                                       tempsAttente);
             }
             // On passe au prochain couple d'arrets
-            precedent = itr;
-            ++itr;
+            precedent = arretStation;
+            ++arretStation;
         }
     }
 }
@@ -121,15 +121,16 @@ void ReseauGTFS::ajouterArcsTransferts(const DonneesGTFS &p_gtfs) {
     const std::vector<std::tuple<unsigned int, unsigned int, unsigned int> > &m_transferts = p_gtfs.getTransferts();
     const map<unsigned int, Station> &m_stations = p_gtfs.getStations();
 
+    // On itère sur les tuples de transferts
     for (auto transfert = m_transferts.begin(); transfert != m_transferts.end(); ++transfert) {
         auto fromStationID = get<0>(*transfert);
         auto toStationID = get<1>(*transfert);
         auto transferTime = get<2>(*transfert);
 
-        auto arretsCourant = m_stations.find(fromStationID)->second.getArrets();
+        auto arretsSource = m_stations.find(fromStationID)->second.getArrets();
         auto arretsSuivants = m_stations.find(toStationID)->second.getArrets();
 
-        for (auto arret = arretsCourant.begin(); arret != arretsCourant.end(); ++arret) {
+        for (auto arret = arretsSource.begin(); arret != arretsSource.end(); ++arret) {
             Heure heureArret = (*arret).first;
             auto prochainArret = arretsSuivants.lower_bound(heureArret.add_secondes(transferTime));
 
@@ -166,6 +167,7 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
     m_nbArcsStationsVersDestination = 0;
     m_nbArcsOrigineVersStations = 0;
 
+    // On crée des Arrets pointeurs pour l'origine et la destination
     Arret::Ptr pointOrigine = make_shared<Arret>(stationIdOrigine, heureDepart, Heure(2, 0, 0), 0, "ORIGINE");
     Arret::Ptr pointDestination = make_shared<Arret>(stationIdDestination, heureDepart, Heure(2, 0, 0), 0,
                                                      "DESTINATION");
@@ -175,6 +177,7 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
     m_sommetOrigine = m_leGraphe.getNbSommets() - 2;
     m_sommetDestination = m_leGraphe.getNbSommets() - 1;
 
+    // Ajouts des sommets dans le graphe
     m_arretDuSommet.push_back(pointOrigine);
     m_arretDuSommet.push_back(pointDestination);
 
@@ -193,13 +196,11 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
         if (distanceMarcheOrigine < distanceMaxMarche) {
             const multimap<Heure, Arret::Ptr> &arretsStation = station->second.getArrets();
 
-            Heure heureMarcheOrigine = heureDepart;
-
             unsigned int secondesMarche = ((distanceMarcheOrigine / vitesseDeMarche) * 3600);
+            Heure tempsMarcheOrigine = heureDepart.add_secondes(secondesMarche);
 
-            heureMarcheOrigine = heureMarcheOrigine.add_secondes(secondesMarche);
+            multimap<Heure, Arret::Ptr>::const_iterator arretAccessible = arretsStation.lower_bound(tempsMarcheOrigine);
 
-            multimap<Heure, Arret::Ptr>::const_iterator arretAccessible = arretsStation.lower_bound(heureMarcheOrigine);
             if (arretAccessible != arretsStation.end()) {
                 m_leGraphe.ajouterArc(m_sommetOrigine, m_sommetDeArret[(*arretAccessible).second],
                                       (*arretAccessible).first - heureDepart);
@@ -213,13 +214,14 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
 
             for (auto arret = arretsStation.begin(); arret != arretsStation.end(); ++arret) {
                 size_t sommetArret = m_sommetDeArret[(*arret).second];
+
                 m_leGraphe.ajouterArc(sommetArret, m_sommetDestination, tempsMarcheDestination);
                 m_sommetsVersDestination.push_back(sommetArret);
                 ++m_nbArcsStationsVersDestination;
             }
         }
     }
-
+    // On indique que que les arcs origine/destination ont été ajoutés
     m_origine_dest_ajoute = true;
 }
 
