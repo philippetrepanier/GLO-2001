@@ -175,14 +175,14 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
         double distanceMarcheOrigine = p_pointOrigine - coordStation;
         double distanceMarcheDestination = p_pointDestination - coordStation;
 
-        if (distanceMarcheOrigine <= distanceMaxMarche) {
+        if (distanceMarcheOrigine < distanceMaxMarche) {
             const multimap<Heure, Arret::Ptr> &arretsStation = station->second.getArrets();
 
             Heure heureMarcheOrigine = heureDepart;
 
-            unsigned int secondesMarche = static_cast<unsigned int>(((distanceMarcheOrigine / vitesseDeMarche) * 3600) + 0.5);
+            unsigned int secondesMarche = ((distanceMarcheOrigine / vitesseDeMarche) * 3600);
 
-            heureMarcheOrigine.add_secondes(secondesMarche);
+            heureMarcheOrigine = heureMarcheOrigine.add_secondes(secondesMarche);
 
             multimap<Heure, Arret::Ptr>::const_iterator arretAccessible = arretsStation.lower_bound(heureMarcheOrigine);
             if (arretAccessible != arretsStation.end()) {
@@ -191,7 +191,7 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
                 ++m_nbArcsOrigineVersStations;
             }
         }
-        if (distanceMarcheDestination <= distanceMaxMarche){
+        if (distanceMarcheDestination < distanceMaxMarche){
             const multimap<Heure, Arret::Ptr> &arretsStation = station->second.getArrets();
 
             unsigned int tempsMarcheDestination = (distanceMarcheDestination / vitesseDeMarche) * 3600;
@@ -205,10 +205,6 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
         }
     }
 
-
-    //ajout des arcs à pieds entre le point source et les arrets des stations atteignables
-
-    //ajout des arcs à pieds des arrêts de certaine stations vers l'arret point destination
     m_origine_dest_ajoute = true;
 }
 
