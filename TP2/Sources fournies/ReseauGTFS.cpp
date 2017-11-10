@@ -90,7 +90,7 @@ void ReseauGTFS::ajouterArcsAttentes(const DonneesGTFS &p_gtfs) {
 
     // On itère sur les stations
     for (auto station = m_stations.begin(); station != m_stations.end(); ++station) {
-        const multimap<Heure, Arret::Ptr> arretsStation = station->second.getArrets();
+        const multimap<Heure, Arret::Ptr> &arretsStation = station->second.getArrets();
 
         // On note le premier arret d'une station
         auto arretStation = arretsStation.begin();
@@ -221,6 +221,11 @@ void ReseauGTFS::ajouterArcsOrigineDestination(const DonneesGTFS &p_gtfs, const 
             }
         }
     }
+
+    if (m_nbArcsStationsVersDestination == 0 or m_nbArcsOrigineVersStations == 0){
+        throw logic_error("Aucun arrêt de bus n'est dans le rayon maximal de marche de la destination ou de l'origine");
+    }
+
     // On indique que que les arcs origine/destination ont été ajoutés
     m_origine_dest_ajoute = true;
 }
@@ -236,13 +241,24 @@ void ReseauGTFS::enleverArcsOrigineDestination() {
         throw logic_error("Il n'y a pas d'arcs d'origine et de destination dans le graphe");
     }
 
-    size_t tailleGraphe = m_leGraphe.getNbSommets();
-
     for (auto sommet = m_sommetsVersDestination.begin(); sommet != m_sommetsVersDestination.end(); ++sommet) {
         m_leGraphe.enleverArc(*sommet, m_sommetDestination);
     }
-    m_leGraphe.resize(tailleGraphe - 2);
+    m_leGraphe.resize(m_leGraphe.getNbSommets() - 2);
 
+    // Allons chercher les pointeurs des sommets Origine et Destination
+    Arret::Ptr sommetOrigine = m_arretDuSommet[m_sommetOrigine];
+    Arret::Ptr sommetDestination = m_arretDuSommet[m_sommetDestination];
+
+    // Suppression m_sommetDeArret
+    m_sommetDeArret.erase(sommetOrigine);
+    m_sommetDeArret.erase(sommetDestination);
+
+    // Suppression des sommets dans m_arretDuSommet
+    m_arretDuSommet.pop_back();
+    m_arretDuSommet.pop_back();
+
+    // Mise à jour des paramètres du graphe
     m_nbArcsOrigineVersStations = 0;
     m_nbArcsStationsVersDestination = 0;
     m_sommetsVersDestination.clear();
