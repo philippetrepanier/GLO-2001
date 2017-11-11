@@ -47,25 +47,29 @@ ReseauGTFS::ReseauGTFS(const DonneesGTFS &p_gtfs)
 //! \brief insère les arrêts (associés aux sommets) dans m_arretDuSommet et m_sommetDeArret
 //! \throws logic_error si une incohérence est détecté lors de cette étape de construction du graphe
 void ReseauGTFS::ajouterArcsVoyages(const DonneesGTFS &p_gtfs) {
+    if (m_arretDuSommet.size() != 0){
+        throw logic_error("Le graphe est déjà initialisé avec des noeuds, l'ajout supplémentaire est impossible");
+    }
+
     const map<std::string, Voyage> &m_voyages = p_gtfs.getVoyages();
+    size_t sommetCourant = m_arretDuSommet.size();
 
     for (auto itr = m_voyages.begin(); itr != m_voyages.end(); ++itr) {
         const set<Arret::Ptr, Voyage::compArret> m_arretsVoyage = itr->second.getArrets();
 
         auto voyage = m_arretsVoyage.begin();
         auto precedent = *voyage;
-        size_t sommetCourrant = m_arretDuSommet.size();
 
         // On insère les premiers arrets de chaque voyage
-        m_sommetDeArret.insert({*voyage, sommetCourrant});
+        m_sommetDeArret.insert({*voyage, sommetCourant});
         m_arretDuSommet.push_back(*voyage);
 
-        ++sommetCourrant;
+        ++sommetCourant;
         ++voyage;
 
         // La boucle itère sur un couple de valeurs et ajoute les arcs respectifs
         while (voyage != m_arretsVoyage.end()) {
-            m_sommetDeArret.insert({*voyage, sommetCourrant});
+            m_sommetDeArret.insert({*voyage, sommetCourant});
             m_arretDuSommet.push_back(*voyage);
 
             auto poids = (*voyage)->getHeureArrivee() - precedent->getHeureArrivee();
@@ -74,10 +78,10 @@ void ReseauGTFS::ajouterArcsVoyages(const DonneesGTFS &p_gtfs) {
                 throw logic_error("Un poids négatif a été détecté");
             }
 
-            m_leGraphe.ajouterArc((sommetCourrant - 1), sommetCourrant, poids);
+            m_leGraphe.ajouterArc((sommetCourant - 1), sommetCourant, poids);
 
             precedent = *voyage;
-            ++sommetCourrant;
+            ++sommetCourant;
             ++voyage;
         }
     }
