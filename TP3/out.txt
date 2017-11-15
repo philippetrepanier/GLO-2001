@@ -1,0 +1,237 @@
+Nombre de lignes = 290
+Nombre de stations initiales = 4584
+Nombre de services = 3
+Chargement des données effectué en 8.49598 secondes
+Nombre de stations ayant au moins 1 arret = 4182
+Nombre de transferts = 634
+Nombres de voyages = 3227
+Nombre d'arrets = 152680
+Le nombre d'arcs (sans le point origine et destination) est = 330323
+Graphe (sans le point source et destination) a été produit en 0.122381 secondes
+
+==========================================
+           début de la simulation         
+==========================================
+
+
+Test numéro 0
+station du point origine = 2837 - Grandjean/2837 (lat:46.7605, long:-71.3297)
+station du point destination = 1692 - de Verdun (lat:46.8058, long:-71.2472)
+distance = 8.05302 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 1884 - du Campanile (lat:46.7618, long:-71.331)
+De cette station, prenez l'autobus numéro 107 à l'heure 08:33:00 Vers Gare du Palais (Est)
+et arrêtez-vous à la station 1470 - Quatre-Bourgeois (lat:46.7858, long:-71.2817) à l'heure 08:46:00
+De cette station, prenez l'autobus numéro 807 à l'heure 08:49:00 Vers Place D'Youville (Est)
+et arrêtez-vous à la station 1484 - Joffre (lat:46.798, long:-71.2469) à l'heure 08:59:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:09:28
+Durée du trajet: 0 heures, 39 minutes, 28 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 402183 microsecondes
+
+Test numéro 1
+station du point origine = 1592 - 16e Rue (lat:46.8309, long:-71.2312)
+station du point destination = 3701 - Anick (lat:46.8892, long:-71.2021)
+distance = 6.84917 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 1295 - H. Enfant-Jésus (lat:46.8366, long:-71.2248)
+De cette station, prenez l'autobus numéro 802 à l'heure 08:40:00 Vers Terminus Beauport (Est)
+et arrêtez-vous à la station 1361 - T. Beauport (lat:46.8468, long:-71.2162) à l'heure 08:49:00
+De cette station, rendez-vous à pieds à la station 5030 - T. Beauport (lat:46.8473, long:-71.2169)
+De cette station, prenez l'autobus numéro 52 à l'heure 08:57:00 Vers Du Bourg-Royal (Est)
+et arrêtez-vous à la station 1264 - Lortie (lat:46.85, long:-71.2111) à l'heure 09:04:00
+De cette station, prenez l'autobus numéro 44 à l'heure 09:04:00 Vers Sainte-Thérèse-de-Lisieux (Nord)
+et arrêtez-vous à la station 3756 - des Cordillères (lat:46.8779, long:-71.1997) à l'heure 09:14:00
+De cette station, prenez l'autobus numéro 55 à l'heure 09:15:00 Vers Sainte-Thérèse-de-Lisieux (Nord)
+et arrêtez-vous à la station 3701 - Anick (lat:46.8892, long:-71.2021) à l'heure 09:20:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:20:00
+Durée du trajet: 0 heures, 50 minutes, 0 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 849834 microsecondes
+
+Test numéro 2
+station du point origine = 1117 - Champlain/1117 (lat:46.8033, long:-71.2076)
+station du point destination = 3918 - du Camarat (lat:46.8966, long:-71.195)
+distance = 10.4224 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 1560 - C. Parlementaire (lat:46.809, long:-71.2172)
+De cette station, prenez l'autobus numéro 800 à l'heure 08:42:00 Vers Beauport (Est)
+et arrêtez-vous à la station 2518 - St-Jules (lat:46.8595, long:-71.1924) à l'heure 09:10:00
+De cette station, prenez l'autobus numéro 54 à l'heure 09:37:00 Vers Sainte-Thérèse-de-Lisieux (Nord)
+et arrêtez-vous à la station 3956 - Isabelle (lat:46.9018, long:-71.2019) à l'heure 09:52:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 10:01:22
+Durée du trajet: 1 heures, 31 minutes, 22 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 2814840 microsecondes
+
+Test numéro 3
+station du point origine = 5392 - de Varsovie (lat:46.8485, long:-71.3357)
+station du point destination = 3691 - 119e Rue (lat:46.8726, long:-71.1624)
+distance = 13.4463 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 4340 - Chauveau (lat:46.8454, long:-71.3217)
+De cette station, prenez l'autobus numéro 72 à l'heure 08:44:00 Vers Terminus Charlesbourg (Est)
+et arrêtez-vous à la station 5522 - T. Charlesbourg (lat:46.8619, long:-71.2677) à l'heure 08:59:00
+De cette station, prenez l'autobus numéro 72 à l'heure 09:03:00 Vers Loretteville (Ouest)
+et arrêtez-vous à la station 3152 - Cloutier (lat:46.8561, long:-71.2737) à l'heure 09:06:00
+De cette station, prenez l'autobus numéro 37 à l'heure 09:06:00 Vers 41e Rue Est / colline Parlementaire (Sud)
+et arrêtez-vous à la station 2976 - 41e Rue (lat:46.84, long:-71.2525) à l'heure 09:17:00
+De cette station, prenez l'autobus numéro 803 à l'heure 09:22:00 Vers Terminus Beauport (Est)
+et arrêtez-vous à la station 3328 - T. Beauport (lat:46.847, long:-71.2165) à l'heure 09:37:00
+De cette station, rendez-vous à pieds à la station 2568 - T. Beauport (lat:46.8467, long:-71.216)
+De cette station, prenez l'autobus numéro 800 à l'heure 09:43:00 Vers Beauport (Est)
+et arrêtez-vous à la station 3351 - T. La Cimenterie (lat:46.8747, long:-71.1715) à l'heure 09:53:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 10:01:46
+Durée du trajet: 1 heures, 31 minutes, 46 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 1980807 microsecondes
+
+Test numéro 4
+station du point origine = 4484 - du Moulin (lat:46.7979, long:-71.3515)
+station du point destination = 4808 - J.-Verret (lat:46.8997, long:-71.3693)
+distance = 11.4074 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 4596 - A.-le-Trotteur (lat:46.8018, long:-71.3441)
+De cette station, prenez l'autobus numéro 80 à l'heure 08:39:00 Vers Place Jacques-Cartier (Sud)
+et arrêtez-vous à la station 5729 - T. Les Saules (lat:46.8127, long:-71.3236) à l'heure 08:43:00
+De cette station, rendez-vous à pieds à la station 5736 - T. Les Saules (lat:46.8126, long:-71.3232)
+De cette station, prenez l'autobus numéro 804 à l'heure 08:47:00 Vers Sainte-Foy Centre (Sud)
+et arrêtez-vous à la station 1253 - St-Omer (lat:46.8119, long:-71.3142) à l'heure 08:49:00
+De cette station, prenez l'autobus numéro 803 à l'heure 08:50:00 Vers Terminus Beauport (Est)
+et arrêtez-vous à la station 2539 - T. Gal. Capitale (lat:46.8304, long:-71.2967) à l'heure 08:58:00
+De cette station, rendez-vous à pieds à la station 2560 - T. Gal. Capitale (lat:46.8306, long:-71.2964)
+De cette station, prenez l'autobus numéro 75 à l'heure 09:02:00 Vers Loretteville (Nord)
+et arrêtez-vous à la station 5238 - La Morille/5238 (lat:46.8423, long:-71.3056) à l'heure 09:09:00
+De cette station, prenez l'autobus numéro 82 à l'heure 09:09:00 Vers Lac-Saint-Charles (Nord)
+et arrêtez-vous à la station 4808 - J.-Verret (lat:46.8997, long:-71.3693) à l'heure 09:34:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:34:00
+Durée du trajet: 1 heures, 4 minutes, 0 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 1047460 microsecondes
+
+Test numéro 5
+station du point origine = 4602 - W.-Hamel (lat:46.8058, long:-71.3165)
+station du point destination = 1119 - Champlain/1119 (lat:46.8018, long:-71.2117)
+distance = 7.98861 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 5037 - Morand (lat:46.8152, long:-71.3266)
+De cette station, prenez l'autobus numéro 280 à l'heure 08:53:00 Vers Place Jacques-Cartier / colline Parlementaire (Sud)
+et arrêtez-vous à la station 1262 - Place J.-Cartier (lat:46.814, long:-71.227) à l'heure 09:05:00
+De cette station, prenez l'autobus numéro 28 à l'heure 09:09:00 Vers Colline Parlementaire (Sud)
+et arrêtez-vous à la station 1517 - C. Parlementaire (lat:46.8097, long:-71.216) à l'heure 09:15:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:26:17
+Durée du trajet: 0 heures, 56 minutes, 17 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 865009 microsecondes
+
+Test numéro 6
+station du point origine = 2129 - du Foulon/2129 (lat:46.7703, long:-71.2552)
+station du point destination = 4470 - Claudel (lat:46.7993, long:-71.3076)
+distance = 5.13214 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 1559 - Laurier (lat:46.777, long:-71.2708)
+De cette station, prenez l'autobus numéro 18 à l'heure 08:48:00 Vers Université Laval (Ouest)
+et arrêtez-vous à la station 1502 - de la Terrasse (lat:46.784, long:-71.274) à l'heure 08:52:00
+De cette station, prenez l'autobus numéro 804 à l'heure 08:54:00 Vers Loretteville (Nord)
+et arrêtez-vous à la station 4355 - d'Alger (lat:46.8118, long:-71.302) à l'heure 09:10:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:27:25
+Durée du trajet: 0 heures, 57 minutes, 25 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 513167 microsecondes
+
+Test numéro 7
+station du point origine = 2849 - des Courlis (lat:46.8786, long:-71.285)
+station du point destination = 1391 - Turnbull (lat:46.8084, long:-71.2252)
+distance = 9.03283 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 2849 - des Courlis (lat:46.8786, long:-71.285)
+De cette station, prenez l'autobus numéro 801 à l'heure 08:31:00 Vers Pointe-de-Sainte-Foy (Ouest)
+et arrêtez-vous à la station 1262 - Place J.-Cartier (lat:46.814, long:-71.227) à l'heure 08:58:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:05:38
+Durée du trajet: 0 heures, 35 minutes, 38 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 189707 microsecondes
+
+Test numéro 8
+station du point origine = 1846 - De Bougainville (lat:46.7971, long:-71.2322)
+station du point destination = 5701 - T. Charlesbourg (lat:46.8619, long:-71.2674)
+distance = 7.68115 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 1027 - R.-Lévesque (lat:46.7973, long:-71.2395)
+De cette station, prenez l'autobus numéro 802 à l'heure 08:40:00 Vers Terminus Beauport (Est)
+et arrêtez-vous à la station 1289 - 1re Avenue (lat:46.83, long:-71.2379) à l'heure 08:52:00
+De cette station, rendez-vous à pieds à la station 1213 - 18e Rue (lat:46.83, long:-71.2376)
+De cette station, prenez l'autobus numéro 801 à l'heure 09:01:00 Vers Charlesbourg (Est)
+et arrêtez-vous à la station 5690 - T. Charlesbourg (lat:46.8621, long:-71.2679) à l'heure 09:14:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:14:33
+Durée du trajet: 0 heures, 44 minutes, 33 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 717595 microsecondes
+
+Test numéro 9
+station du point origine = 2273 - Taillon (lat:46.8001, long:-71.2546)
+station du point destination = 3010 - Cégep Limoilou (lat:46.8611, long:-71.2616)
+distance = 6.81204 kilomètres
+
+=====================
+     ITINÉRAIRE      
+=====================
+
+Heure de départ du point d'origine: 08:30:00
+Rendez vous à la station 1085 - Pente-Douce (lat:46.8015, long:-71.2444)
+De cette station, prenez l'autobus numéro 802 à l'heure 08:41:00 Vers Terminus Beauport (Est)
+et arrêtez-vous à la station 1289 - 1re Avenue (lat:46.83, long:-71.2379) à l'heure 08:52:00
+De cette station, rendez-vous à pieds à la station 1213 - 18e Rue (lat:46.83, long:-71.2376)
+De cette station, prenez l'autobus numéro 801 à l'heure 09:01:00 Vers Charlesbourg (Est)
+et arrêtez-vous à la station 1939 - 70e Rue (lat:46.8572, long:-71.2614) à l'heure 09:11:00
+Déplacez-vous à pieds de cette station au point destination
+Heure d'arrivée à la destination: 09:16:16
+Durée du trajet: 0 heures, 46 minutes, 16 secondes
+Temps d'exécution de l'algorithme de plus court chemin: 746321 microsecondes
+
+La moyenne du temps d'exécution sur 10 itinéraires est de 1.01269e+06 microsecondes
