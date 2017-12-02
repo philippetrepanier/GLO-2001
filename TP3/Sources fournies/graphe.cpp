@@ -110,6 +110,7 @@ unsigned int Graphe::plusCourtChemin(size_t p_origine, size_t p_destination, std
     
     p_chemin.clear();
 
+    //Si l'origine et la destination sont les mêmes points
     if (p_origine == p_destination)
     {
         p_chemin.push_back(p_destination);
@@ -128,36 +129,40 @@ unsigned int Graphe::plusCourtChemin(size_t p_origine, size_t p_destination, std
         }
     };
 
-    priority_queue<Noeud, vector<Noeud>, CompNoeud> q; //ensemble des noeuds non solutionnés;
+    priority_queue<Noeud, vector<Noeud>, CompNoeud> q; //ensemble des noeuds non solutionnés
 
+    //Containers pour réaliser le travail et le résultat de l'algorithme
     vector<unsigned int> distance(m_listesAdj.size(), numeric_limits<unsigned int>::max());
     vector<size_t> predecesseur(m_listesAdj.size(), numeric_limits<size_t>::max());
     vector<bool> visite(m_listesAdj.size(), false);
 
+    //On ajoute le noeud de départ
     distance[p_origine] = 0;
     q.push(Noeud{p_origine, 0});
     
     //Boucle principale: trouver distance[] et predecesseur[]
     while (!q.empty())
     {
+        //On prend le noeud le plus proche et on l'enlève de la file
         Noeud u = q.top();
         q.pop();
         size_t numNoeud = u.numNoeud;
 
+        //On marque le noeud visité
         visite[numNoeud] = true;
 
         if (numNoeud == p_destination) break; //car on a obtenu distance[p_destination] et predecesseur[p_destination]
 
-        unsigned int min = numeric_limits<unsigned int>::max();
+        //On effectue le relachement et identifie le voisin le plus près
         for (auto u2 = m_listesAdj[numNoeud].begin(); u2 != m_listesAdj[numNoeud].end(); ++u2)
         {
             if (!visite[u2->destination]) {
-                unsigned int distancePaire = distance[numNoeud] + u2->poids;
+                unsigned int nouvelleDistance = distance[numNoeud] + u2->poids;
 
-                if (distancePaire < distance[u2->destination]) {
-                    distance[u2->destination] = distancePaire;
-
-                    Noeud n2 {u2->destination, distancePaire};
+                //On regarde si la distance est plus courte en passant par le sommet u
+                if (nouvelleDistance < distance[u2->destination]) {
+                    distance[u2->destination] = nouvelleDistance;
+                    Noeud n2 {u2->destination, nouvelleDistance};
                     q.push(n2);
                     predecesseur[u2->destination] = u.numNoeud;
                 }
