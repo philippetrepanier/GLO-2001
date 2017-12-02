@@ -109,51 +109,43 @@ unsigned int Graphe::plusCourtChemin(size_t p_origine, size_t p_destination, std
         throw logic_error("Graphe::dijkstra(): p_origine ou p_destination n'existe pas");
     
     p_chemin.clear();
-    
+
     if (p_origine == p_destination)
     {
         p_chemin.push_back(p_destination);
         return 0;
     }
+
+    priority_queue<Arc, vector<Arc>, greater<Arc>> q; //ensemble des noeuds non solutionnés;
+
     vector<unsigned int> distance(m_listesAdj.size(), numeric_limits<unsigned int>::max());
     vector<size_t> predecesseur(m_listesAdj.size(), numeric_limits<size_t>::max());
+    vector<bool> visite(m_listesAdj.size(), false);
+
     distance[p_origine] = 0;
-    
-    list<size_t> q; //ensemble des noeuds non solutionnés;
-    for (size_t i = 0; i < m_listesAdj.size(); ++i) //construction de q
-    {
-        q.push_back(i);
-    }
+    q.push(Arc(p_origine, 0));
     
     //Boucle principale: touver distance[] et predecesseur[]
     while (!q.empty())
     {
-        //trouver uStar dans q tel que distance[uStar] est minimal
-        list<size_t>::iterator uStar_itr = q.end();
+        int u = q.top().destination;
+        q.pop();
+        visite[u] = true;
+
+        if (u == p_destination) break; //car on a obtenu distance[p_destination] et predecesseur[p_destination]
+
         unsigned int min = numeric_limits<unsigned int>::max();
-        for (auto itr = q.begin(); itr != q.end(); ++itr)
+        for (auto itr = m_listesAdj[u].begin(); itr != m_listesAdj[u].end(); ++itr)
         {
-            if (distance[*itr] < min)
-            {
-                min = distance[*itr];
-                uStar_itr = itr;
-            }
-        }
-        if (uStar_itr == q.end()) break; //quitter la boucle : il est impossible de se rendre à destination
-        
-        size_t uStar = *uStar_itr; //le noeud solutionné
-        q.erase(uStar_itr); //l'enlevé de q
-        
-        if (uStar == p_destination) break; //car on a obtenu distance[p_destination] et predecesseur[p_destination]
-        
-        //relâcher les arcs sortant de uStar
-        for (auto u_itr = m_listesAdj[uStar].begin(); u_itr != m_listesAdj[uStar].end(); ++u_itr)
-        {
-            unsigned int temp = distance[uStar] + u_itr->poids;
-            if (temp < distance[u_itr->destination])
-            {
-                distance[u_itr->destination] = temp;
-                predecesseur[u_itr->destination] = uStar;
+            if (!visite[itr->destination]) {
+                unsigned int u2 = itr->destination;
+                unsigned int u2Poids = itr->poids;
+
+                if ((distance[u] + u2Poids) < distance[u2]) {
+                    distance[u2] = distance[u2] + u2Poids;
+                    q.push(Graphe::Arc(u2, distance[u2]));
+                    predecesseur[u2] = u;
+                }
             }
         }
     }

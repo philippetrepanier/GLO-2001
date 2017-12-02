@@ -14,6 +14,7 @@
 #include <limits>
 #include <iostream>
 #include <algorithm>
+#include <queue>
 
 //! \brief  Classe pour graphes orientés pondérés (non négativement) avec listes d'adjacence
 class Graphe
@@ -35,13 +36,17 @@ private:
 
 	struct Arc
 	{
-		Arc(size_t dest, unsigned int p) :
+        inline friend bool operator> (const Arc& p1, const Arc& p2){
+            return p1.poids < p2.poids;
+        }
+        Arc(size_t dest, unsigned int p) :
 				destination(dest), poids(p)
 		{
 		}
-		size_t destination;
-		unsigned int poids;
+        size_t destination;
+        unsigned int poids;
 	};
+
 
 	std::vector<std::list<Arc> > m_listesAdj; /*!< les listes d'adjacence */
     unsigned long nbArcs;
