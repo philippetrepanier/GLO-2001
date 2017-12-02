@@ -36,9 +36,6 @@ private:
 
 	struct Arc
 	{
-        inline friend bool operator> (const Arc& p1, const Arc& p2){
-            return p1.poids < p2.poids;
-        }
         Arc(size_t dest, unsigned int p) :
 				destination(dest), poids(p)
 		{

@@ -116,35 +116,50 @@ unsigned int Graphe::plusCourtChemin(size_t p_origine, size_t p_destination, std
         return 0;
     }
 
-    priority_queue<Arc, vector<Arc>, greater<Arc>> q; //ensemble des noeuds non solutionnés;
+    //Structure de données pour les noeuds de l'algorithme
+    struct Noeud {
+        size_t numNoeud;
+        unsigned int distance;
+    };
+    //Comparateur pour maintenir l'ordre de la fille de priorité
+    struct CompNoeud {
+        bool operator() (const Noeud& noeud1, const Noeud& noeud2){
+            return noeud1.distance > noeud2.distance;
+        }
+    };
+
+    priority_queue<Noeud, vector<Noeud>, CompNoeud> q; //ensemble des noeuds non solutionnés;
 
     vector<unsigned int> distance(m_listesAdj.size(), numeric_limits<unsigned int>::max());
     vector<size_t> predecesseur(m_listesAdj.size(), numeric_limits<size_t>::max());
     vector<bool> visite(m_listesAdj.size(), false);
 
     distance[p_origine] = 0;
-    q.push(Arc(p_origine, 0));
+    q.push(Noeud{p_origine, 0});
     
-    //Boucle principale: touver distance[] et predecesseur[]
+    //Boucle principale: trouver distance[] et predecesseur[]
     while (!q.empty())
     {
-        int u = q.top().destination;
+        Noeud u = q.top();
         q.pop();
-        visite[u] = true;
+        size_t numNoeud = u.numNoeud;
 
-        if (u == p_destination) break; //car on a obtenu distance[p_destination] et predecesseur[p_destination]
+        visite[numNoeud] = true;
+
+        if (numNoeud == p_destination) break; //car on a obtenu distance[p_destination] et predecesseur[p_destination]
 
         unsigned int min = numeric_limits<unsigned int>::max();
-        for (auto itr = m_listesAdj[u].begin(); itr != m_listesAdj[u].end(); ++itr)
+        for (auto u2 = m_listesAdj[numNoeud].begin(); u2 != m_listesAdj[numNoeud].end(); ++u2)
         {
-            if (!visite[itr->destination]) {
-                unsigned int u2 = itr->destination;
-                unsigned int u2Poids = itr->poids;
+            if (!visite[u2->destination]) {
+                unsigned int distancePaire = distance[numNoeud] + u2->poids;
 
-                if ((distance[u] + u2Poids) < distance[u2]) {
-                    distance[u2] = distance[u2] + u2Poids;
-                    q.push(Graphe::Arc(u2, distance[u2]));
-                    predecesseur[u2] = u;
+                if (distancePaire < distance[u2->destination]) {
+                    distance[u2->destination] = distancePaire;
+
+                    Noeud n2 {u2->destination, distancePaire};
+                    q.push(n2);
+                    predecesseur[u2->destination] = u.numNoeud;
                 }
             }
         }
